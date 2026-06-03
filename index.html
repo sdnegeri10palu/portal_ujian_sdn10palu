@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PORTAL UJIAN ONLINE SD NEGERI 10 PALU</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1e4d2b 0%, #3a7d44 50%, #f4e04d 100%);
+            min-height: 100vh;
+        }
+        /* 3D Glassmorphism Effect */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2), 
+                        inset 0 2px 4px rgba(255, 255, 255, 0.4),
+                        0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        .btn-3d {
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 0px #1b4323;
+        }
+        .btn-3d:active {
+            transform: translateY(4px);
+            box-shadow: 0 0px 0px #1b4323;
+        }
+        .btn-class {
+            background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+            box-shadow: 0 5px 0px #123e16, 0 8px 15px rgba(0,0,0,0.2);
+        }
+        .btn-class:active {
+            transform: translateY(5px);
+            box-shadow: 0 0px 0px #123e16;
+        }
+        .btn-class.active {
+            background: linear-gradient(135deg, #ffd600 0%, #ffab00 100%);
+            color: #1b5e20;
+            box-shadow: 0 5px 0px #c68400, 0 8px 15px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body class="p-4 flex flex-col items-center justify-start text-slate-800">
+
+    <div class="w-full max-w-md glass-card rounded-2xl p-6 text-center mb-6 mt-4 relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-green-500 via-yellow-400 to-white"></div>
+        <h1 class="text-2xl font-bold tracking-wide text-green-900 leading-tight">PORTAL UJIAN ONLINE</h1>
+        <h2 class="text-lg font-semibold text-green-700 mt-1">SD NEGERI 10 PALU</h2>
+        <p class="text-xs text-slate-500 mt-2">Tahun Ajaran 2025/2026</p>
+    </div>
+
+    <div class="w-full max-w-md glass-card rounded-2xl p-5 mb-6">
+        <h3 class="text-center font-bold text-green-900 mb-4 text-sm tracking-wider uppercase">Silahkan Pilih Kelasmu :</h3>
+        
+        <div class="flex flex-col gap-4">
+            <div class="flex justify-center">
+                <button onclick="selectClass('Kelas 3')" id="btn-Kelas 3" class="btn-class text-white font-bold py-3 px-10 rounded-xl text-md w-3/4 transform active:scale-95 transition-transform duration-100">
+                    KELAS 3
+                </button>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-3">
+                <button onclick="selectClass('Kelas 4A')" id="btn-Kelas 4A" class="btn-class text-white font-bold py-3 px-4 rounded-xl text-md transform active:scale-95 transition-transform duration-100">
+                    KELAS 4A
+                </button>
+                <button onclick="selectClass('Kelas 4B')" id="btn-Kelas 4B" class="btn-class text-white font-bold py-3 px-4 rounded-xl text-md transform active:scale-95 transition-transform duration-100">
+                    KELAS 4B
+                </button>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-3">
+                <button onclick="selectClass('Kelas 5A')" id="btn-Kelas 5A" class="btn-class text-white font-bold py-3 px-4 rounded-xl text-md transform active:scale-95 transition-transform duration-100">
+                    KELAS 5A
+                </button>
+                <button onclick="selectClass('Kelas 5B')" id="btn-Kelas 5B" class="btn-class text-white font-bold py-3 px-4 rounded-xl text-md transform active:scale-95 transition-transform duration-100">
+                    KELAS 5B
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="jadwal-section" class="w-full max-w-md hidden mb-8">
+        <div class="glass-card rounded-2xl p-4">
+            <div class="border-b-2 border-dashed border-green-200 pb-2 mb-4 text-center">
+                <h4 class="text-md font-bold text-green-900">JADWAL & SOAL UJIAN</h4>
+                <span id="selected-title" class="inline-block bg-yellow-400 text-green-900 font-bold px-4 py-1 rounded-full text-xs mt-1 shadow-sm"></span>
+            </div>
+
+            <div id="jadwal-list" class="space-y-4">
+                </div>
+        </div>
+    </div>
+
+    <div class="text-white text-center text-xs opacity-75 mt-auto pb-4">
+        © 2026 SD Negeri 10 Palu. All Rights Reserved.
+    </div>
+
+    <script>
+        // Database Jadwal dengan format tambahan 'tanggalSistem' (YYYY-MM-DD) untuk deteksi otomatis pengerjaan soal
+        const examData = {
+            "Kelas 3": [
+                { tanggalSistem: "2026-06-08", hari: "Senin, 8 Juni 2026", waktu: "07.30 - 09.00", mapel: "Bahasa Indonesia", url: "https://forms.gle/linkKelas3BI" },
+                { tanggalSistem: "2026-06-08", hari: "Senin, 8 Juni 2026", waktu: "09.30 - 11.30", mapel: "Pendidikan Pancasila", url: "https://forms.gle/linkKelas3PP" },
+                { tanggalSistem: "2026-06-09", hari: "Selasa, 9 Juni 2026", waktu: "07.30 - 09.00", mapel: "Matematika (Umum)", url: "https://forms.gle/linkKelas3MTK" },
+                { tanggalSistem: "2026-06-09", hari: "Selasa, 9 Juni 2026", waktu: "09.30 - 11.30", mapel: "Pend. Agama", isAgama: true, urlIslam: "https://forms.gle/linkKelas3AgamaIslam", urlKristen: "https://forms.gle/EBdjRaGcxqoLeEwcA" },
+                { tanggalSistem: "2026-06-10", hari: "Rabu, 10 Juni 2026", waktu: "07.30 - 09.00", mapel: "IPAS", url: "https://forms.gle/linkKelas3IPAS" },
+                { tanggalSistem: "2026-06-10", hari: "Rabu, 10 Juni 2026", waktu: "09.30 - 11.30", mapel: "Bahasa Inggris", url: "https://forms.gle/linkKelas3Bing" },
+                { tanggalSistem: "2026-06-11", hari: "Kamis, 11 Juni 2026", waktu: "07.30 - 09.00", mapel: "PJOK", url: "https://forms.gle/linkKelas3PJOK" },
+                { tanggalSistem: "2026-06-11", hari: "Kamis, 11 Juni 2026", waktu: "09.30 - 11.30", mapel: "Seni Budaya", url: "https://forms.gle/linkKelas3Seni" },
+                { tanggalSistem: "2026-06-12", hari: "Jumat, 12 Juni 2026", waktu: "07.30 - 08.30", mapel: "Bahasa Daerah", url: "https://forms.gle/linkKelas3Daerah" }
+            ],
+            "Kelas 4A": [
+                { tanggalSistem: "2026-06-08", hari: "Senin, 8 Juni 2026", waktu: "07.30 - 09.00", mapel: "Bahasa Indonesia", url: "https://forms.gle/linkKelas4ABI" },
+                { tanggalSistem: "2026-06-08", hari: "Senin, 8 Juni 2026", waktu: "09.30 - 11.30", mapel: "Pendidikan Pancasila", url: "https://forms.gle/linkKelas4APP" },
+                { tanggalSistem: "2026-06-09", hari: "Selasa, 9 Juni 2026", waktu: "07.30 - 09.00", mapel: "Matematika (Umum)", url: "https://forms.gle/linkKelas4AMTK" },
+                { tanggalSistem: "2026-06-09", hari: "Selasa, 9 Juni 2026", waktu: "09.30 - 11.30", mapel: "Pend. Agama", isAgama: true, urlIslam: "https://forms.gle/linkKelas4AAgamaIslam", urlKristen: "https://forms.gle/EBdjRaGcxqoLeEwcA" },
+                { tanggalSistem: "2026-06-10", hari: "Rabu, 10 Juni 2026", waktu: "07.30 - 09.00", mapel: "IPAS", url: "https://forms.gle/linkKelas4AIPAS" },
+                { tanggalSistem: "2026-06-10", hari: "Rabu, 10 Juni 2026", waktu: "09.30 - 11.30", mapel: "Bahasa Inggris", url: "https://forms.gle/linkKelas4ABing" },
+                { tanggalSistem: "2026-06-11", hari: "Kamis, 11 Juni 2026", waktu: "07.30 - 09.00", mapel: "PJOK", url: "https://forms.gle/linkKelas4APJOK" },
+                { tanggalSistem: "2026-06-11", hari: "Kamis, 11 Juni 2026", waktu: "09.30 - 11.30", mapel: "Seni Budaya", url: "https://forms.gle/linkKelas4ASeni" },
+                { tanggalSistem: "2026-06-12", hari: "Jumat, 12 Juni 2026", waktu: "07.30 - 08.30", mapel: "Bahasa Daerah", url: "https://forms.gle/linkKelas4ADaer" }
+            ],
+            "Kelas 4B": [
+                { tanggalSistem: "2026-06-08", hari: "Senin, 8 Juni 2026", waktu: "07.30 - 09.00", mapel: "Bahasa Indonesia", url: "https://forms.gle/linkKelas4BBI" },
+                { tanggalSistem: "2026-06-08", hari: "Senin, 8 Juni 2026", waktu: "09.30 - 11.30", mapel: "Pendidikan Pancasila", url: "https://forms.gle/linkKelas4BPP" },
+                { tanggalSistem: "2026-06-09", hari: "Selasa, 9 Juni 2026", waktu: "07.30 - 09.00", mapel: "Matematika (Umum)", url: "https://forms.gle/linkKelas4BMTK" },
+                { tanggalSistem: "2026-06-09", hari: "Selasa, 9 Juni 2026", waktu: "09.30 - 11.30", mapel: "Pend. Agama", isAgama: true, urlIslam: "https://forms.gle/linkKelas4BAgamaIslam", urlKristen: "https://forms.gle/EBdjRaGcxqoLeEwcA" },
+                { tanggalSistem: "2026-06-10", hari: "Rabu, 10 Juni 2026", waktu: "07.30 - 09.00", mapel: "IPAS", url: "https://forms.gle/linkKelas4BIPAS" },
+                { tanggalSistem: "2026-06-10", hari: "Rabu, 10 Juni 2026", waktu: "09.30 - 11.30", mapel: "Bahasa Inggris", url: "https://forms.gle/linkKelas4BBing" },
+                { tanggalSistem: "2026-06-11", hari: "Kamis, 11 Juni 2026", waktu: "07.30 - 09.00", mapel: "PJOK", url: "https://forms.gle/linkKelas4BPJOK" },
+                { tanggalSistem: "2026-06-11", hari: "Kamis, 11 Juni 2026", waktu: "09.30 - 11.30", mapel: "Seni Budaya", url: "https://forms.gle/linkKelas4BSeni" },
+                { tanggalSistem: "2026-06-12", hari: "Jumat, 12 Juni 2026", waktu: "07.30 - 08.30", mapel: "Bahasa Daerah", url: "https://forms.gle/linkKelas4BDaer" }
+            ],
+            "Kelas 5A": [
+                { tanggalSistem: "2026-06-08", hari: "Senin, 8 Juni 2026", waktu: "07.30 - 09.00", mapel: "Bahasa Indonesia", url: "https://forms.gle/linkKelas5ABI" },
+                { tanggalSistem: "2026-06-08", hari: "Senin, 8 Juni 2026", waktu: "09.30 - 11.30", mapel: "Pendidikan Pancasila", url: "https://forms.gle/linkKelas5APP" },
+                { tanggalSistem: "2026-06-09", hari: "Selasa, 9 Juni 2026", waktu: "07.30 - 09.00", mapel: "Matematika (Umum)", url: "https://forms.gle/linkKelas5AMTK" },
+                { tanggalSistem: "2026-06-09", hari: "Selasa, 9 Juni 2026", waktu: "09.30 - 11.30", mapel: "Pend. Agama", isAgama: true, urlIslam: "https://forms.gle/linkKelas5AAgamaIslam", urlKristen: "https://forms.gle/EBdjRaGcxqoLeEwcA" },
+                { tanggalSistem: "2026-06-10", hari: "Rabu, 10 Juni 2026", waktu: "07.30 - 09.00", mapel: "IPAS", url: "https://forms.gle/linkKelas5AIPAS" },
+                { tanggalSistem: "2026-06-10", hari: "Rabu, 10 Juni 2026", waktu: "09.30 - 11.30", mapel: "Bahasa Inggris", url: "https://forms.gle/linkKelas5ABing" },
+                { tanggalSistem: "2026-06-11", hari: "Kamis, 11 Juni 2026", waktu: "07.30 - 09.00", mapel: "PJOK", url: "https://forms.gle/linkKelas5APJOK" },
+                { tanggalSistem: "2026-06-11", hari: "Kamis, 11 Juni 2026", waktu: "09.30 - 11.30", mapel: "Seni Budaya", url: "https://forms.gle/linkKelas5ASeni" },
+                { tanggalSistem: "2026-06-12", hari: "Jumat, 12 Juni 2026", waktu: "07.30 - 08.30", mapel: "Bahasa Daerah", url: "https://forms.gle/linkKelas5ADaer" }
+            ],
+            "Kelas 5B": [
+                { tanggalSistem: "2026-06-08", hari: "Senin, 8 Juni 2026", waktu: "07.30 - 09.00", mapel: "Bahasa Indonesia", url: "https://forms.gle/linkKelas5BBI" },
+                { tanggalSistem: "2026-06-08", hari: "Senin, 8 Juni 2026", waktu: "09.30 - 11.30", mapel: "Pendidikan Pancasila", url: "https://forms.gle/linkKelas5BPP" },
+                { tanggalSistem: "2026-06-09", hari: "Selasa, 9 Juni 2026", waktu: "07.30 - 09.00", mapel: "Matematika (Umum)", url: "https://forms.gle/linkKelas5BMTK" },
+                { tanggalSistem: "2026-06-09", hari: "Selasa, 9 Juni 2026", waktu: "09.30 - 11.30", mapel: "Pend. Agama", isAgama: true, urlIslam: "https://forms.gle/linkKelas5BAgamaIslam", urlKristen: "https://forms.gle/EBdjRaGcxqoLeEwcA" },
+                { tanggalSistem: "2026-06-10", hari: "Rabu, 10 Juni 2026", waktu: "07.30 - 09.00", mapel: "IPAS", url: "https://forms.gle/linkKelas5BIPAS" },
+                { tanggalSistem: "2026-06-10", hari: "Rabu, 10 Juni 2026", waktu: "09.30 - 11.30", mapel: "Bahasa Inggris", url: "https://forms.gle/linkKelas5BBing" },
+                { tanggalSistem: "2026-06-11", hari: "Kamis, 11 Juni 2026", waktu: "07.30 - 09.00", mapel: "PJOK", url: "https://forms.gle/linkKelas5BPJOK" },
+                { tanggalSistem: "2026-06-11", hari: "Kamis, 11 Juni 2026", waktu: "09.30 - 11.30", mapel: "Seni Budaya", url: "https://forms.gle/linkKelas5BSeni" },
+                { tanggalSistem: "2026-06-12", hari: "Jumat, 12 Juni 2026", waktu: "07.30 - 08.30", mapel: "Bahasa Daerah", url: "https://forms.gle/linkKelas5BDaer" }
+            ]
+        };
+
+        function selectClass(className) {
+            document.querySelectorAll('.btn-class').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            document.getElementById(`btn-${className}`).classList.add('active');
+            document.getElementById('selected-title').innerText = className;
+            
+            const jadwalList = document.getElementById('jadwal-list');
+            jadwalList.innerHTML = ''; 
+
+            // Mendapatkan Tanggal Hari Ini (Format: YYYY-MM-DD)
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            const formattedToday = `${yyyy}-${mm}-${dd}`;
+
+            let counterJadwalTampil = 0;
+
+            // Render Jadwal dengan filter tanggal
+            examData[className].forEach(item => {
+                
+                // JIKA TANGGAL HARI INI BELUM MEMASUKKI TANGGAL UJIAN, MAKA JANGAN TAMPILKAN (SKIP)
+                if (formattedToday < item.tanggalSistem) {
+                    return; 
+                }
+
+                counterJadwalTampil++;
+                let actionHtml = '';
+
+                if(item.isAgama) {
+                    actionHtml = `
+                        <div class="grid grid-cols-2 gap-2 mt-2">
+                            <a href="${item.urlIslam}" target="_blank" class="text-center bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-2 rounded-lg text-xs btn-3d block">
+                                🕌 AGAMA ISLAM
+                            </a>
+                            <a href="${item.urlKristen}" target="_blank" class="text-center bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded-lg text-xs btn-3d block">
+                                ⛪ AGAMA KRISTEN
+                            </a>
+                        </div>
+                    `;
+                } else {
+                    actionHtml = `
+                        <a href="${item.url}" target="_blank" class="mt-2 text-center bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-bold py-2.5 px-4 rounded-xl text-xs tracking-wider btn-3d block uppercase">
+                            Mulai Ujian 📝
+                        </a>
+                    `;
+                }
+
+                const card = `
+                    <div class="bg-white border border-slate-100 rounded-xl p-3 shadow-inner flex flex-col justify-between animate-fade-in">
+                        <div class="flex justify-between items-start mb-1">
+                            <div class="text-xs font-bold text-green-800 bg-green-50 px-2 py-0.5 rounded border border-green-200">
+                                ${item.hari}
+                            </div>
+                            <div class="text-[11px] font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded">
+                                🕒 ${item.waktu} WITA
+                            </div>
+                        </div>
+                        <div class="text-sm font-bold text-slate-800 my-1">${item.mapel}</div>
+                        ${actionHtml}
+                    </div>
+                `;
+                jadwalList.innerHTML += card;
+            });
+
+            // Jika tidak ada jadwal ujian yang aktif atau sesuai untuk hari ini
+            if (counterJadwalTampil === 0) {
+                jadwalList.innerHTML = `
+                    <div class="text-center py-6 text-sm text-slate-500 font-medium">
+                        📭 Belum ada jadwal ujian yang aktif untuk kelas ini.
+                    </div>
+                `;
+            }
+
+            const section = document.getElementById('jadwal-section');
+            section.classList.remove('hidden');
+            section.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    </script>
+</body>
+</html>
