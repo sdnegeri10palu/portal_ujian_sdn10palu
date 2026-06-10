@@ -91,7 +91,7 @@
             </div>
 
             <div id="jadwal-list" class="space-y-4">
-                </div>
+            </div>
         </div>
     </div>
 
@@ -182,8 +182,9 @@
             // Render Jadwal dengan filter tanggal
             examData[className].forEach(item => {
                 
-                // JIKA TANGGAL HARI INI BELUM MEMASUKKI TANGGAL UJIAN, MAKA JANGAN TAMPILKAN (SKIP)
-                if (formattedToday < item.tanggalSistem) {
+                // FILTER BARU: Sembunyikan ujian jika belum masuk hari ujian ATAU sudah melewati hari ujian
+                // Artinya, item.tanggalSistem HARUS SAMA DENGAN formattedToday agar bisa tampil.
+                if (formattedToday !== item.tanggalSistem) {
                     return; 
                 }
 
@@ -194,10 +195,10 @@
                     actionHtml = `
                         <div class="grid grid-cols-2 gap-2 mt-2">
                             <a href="${item.urlIslam}" target="_blank" class="text-center bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-2 rounded-lg text-xs btn-3d block">
-                                🕌 AGAMA ISLAM
+                                1️⃣ AGAMA ISLAM
                             </a>
                             <a href="${item.urlKristen}" target="_blank" class="text-center bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded-lg text-xs btn-3d block">
-                                ⛪ AGAMA KRISTEN
+                                2️⃣ AGAMA KRISTEN
                             </a>
                         </div>
                     `;
